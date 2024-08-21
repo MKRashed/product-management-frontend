@@ -1,9 +1,13 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: [],
+  content: ["./index.html", "./src/**/*.{vue,js,ts,jsx,tsx}"],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        "noto-bangla": ["Noto Sans Bengali", "sans-serif"],
+        lily: ["Courgette"],
+      },
+    },
   },
   plugins: [],
-}
-
+};
