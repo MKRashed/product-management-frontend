@@ -17,7 +17,6 @@ const userData = reactive({
 });
 
 const email = ref("");
-const has_permanent_bmdc = ref(null);
 const state = ref("");
 
 const router = useRouter();
@@ -118,7 +117,7 @@ async function handleFormSubmit() {
 
           <div class="">
             <input
-              class="pl-12 rounded-md w-full"
+              class="px-3 py-1 rounded-md w-full"
               type="password"
               placeholder="Confirm password"
               v-model="userData.password_confirmation"
@@ -130,7 +129,8 @@ async function handleFormSubmit() {
           </div>
 
           <div class="text-center">
-            <AppButton type="btn-2" :loading="state == 'requesting'" block>
+            <!-- :loading="state == 'requesting'" -->
+            <AppButton type="btn-2"  block>
               <p class="">Submit</p>
             </AppButton>
           </div>

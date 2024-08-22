@@ -1,7 +1,6 @@
 <script setup>
 import AppButton from "@/components/AppButton.vue";
 import FormErrors from "@/components/FormErrors.vue";
-import { loadApp } from "@/lib/server";
 import { useAuthStore } from "@/stores/auth";
 import { AxiosError } from "axios";
 import { onMounted, reactive, ref } from "vue";
@@ -25,6 +24,8 @@ const loginMessage = ref("");
 
 async function handleFormSubmit() {
   try {
+    console.log('Some Text here', userData);
+    
     await authStore.login(userData);
 
     /**
@@ -57,8 +58,6 @@ onMounted(async () => {
   } else {
     username.value.focus();
   }
-
-  await loadApp();
 
   if (authStore.is_logged_in) {
     await router.push({ name: "my-dashboard" });
@@ -108,6 +107,7 @@ onMounted(async () => {
             <input
               class="px-3 py-1 rounded-md w-full"
               :type="showPassword ? 'text' : 'password'"
+              v-model="userData.password"
               placeholder="Password"
               ref="password"
             />

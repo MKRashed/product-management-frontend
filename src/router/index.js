@@ -1,5 +1,6 @@
 
 import { createRouter, createWebHistory } from 'vue-router';
+import userRoutes from '@/router/user'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -18,6 +19,11 @@ const router = createRouter({
           component: () => import('@/views/RegistrationPage.vue'),
         },
       ]
+    },
+
+    {
+      path: '/my',
+      children: userRoutes
     },
   ]
 })

@@ -1,4 +1,6 @@
-import axios from 'axios'
+import { useAppStore } from "@/stores/app";
+import axios from 'axios';
+
 axios.defaults.withCredentials = true;
 
 axios.defaults.baseURL = import.meta.env.VITE_APP_API_BASE_URL;
@@ -37,20 +39,12 @@ window.appInitializing = false;
 window.appData = null;
 
 async function loadApp() {
-
+    const app = useAppStore();
     const token = localStorage.getItem(LOGIN_TOKEN_KEY);
-
-    const gns_ddt = localStorage.getItem('_gns-ddt');
-
-
     if(token) {
         axios.defaults.headers['Authorization'] = `Bearer ${token}`;
       }
       
-    if( gns_ddt ) {
-      axios.defaults.headers['X-GNS-DDT'] = `${encodeURI(gns_ddt)}`;
-    }
-
 
   return new Promise((resolve, reject) => {
 
@@ -84,28 +78,20 @@ async function loadApp() {
   });
 }
 
-function setGnsDdt(response){
-  if( response?.data?.gns_ddt && !localStorage.getItem( '_gns-ddt' ) ) {
-    localStorage.setItem( '_gns-ddt', response.data.gns_ddt );
-  }
-}
 
 function setServerFunction(method) {
   return function(...args){
     return new Promise( (resolve, reject) => {
-      loadApp()
+      csrf()
         .then((appData) => {
 
           axios[method]
               .apply({ }, args)
               .then( response => {
-
-                setGnsDdt( response );
                 resolve(response, appData);
 
               })
               .catch((error) => {
-                  setGnsDdt( error?.response || {});
                   reject(error);
               });
 
@@ -127,4 +113,7 @@ function set_auth_token_on_local_storage( token ){
     localStorage.setItem( LOGIN_TOKEN_KEY, token )
 }
 
-export {axios, server, loadApp, LOGIN_TOKEN_KEY, set_auth_token_on_local_storage}
+// export default csrf();
+
+export { axios, loadApp, LOGIN_TOKEN_KEY, server, set_auth_token_on_local_storage };
+

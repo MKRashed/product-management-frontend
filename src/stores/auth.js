@@ -2,9 +2,9 @@ import { LOGIN_TOKEN_KEY, server } from "@/lib/server";
 import { defineStore } from "pinia";
 import { ref } from "vue";
 
-export const TOKEN_EXPIRE_TIME_KEY = "__wQiRWxpZTdCsMSz";
+export const TOKEN_EXPIRE_TIME_KEY = "_oQiRWxpRZTdCsaMSzeD";
 
-export const TOKEN_EXPIRE_INTO_KEY = "__wQxiCyKrnJezUiWz";
+export const TOKEN_EXPIRE_INTO_KEY = "_aQxCsElaHnJezUiWz";
 
 export const useAuthStore = defineStore("authStore",() => {
 
@@ -80,10 +80,14 @@ export const useAuthStore = defineStore("authStore",() => {
     }
 
     async function register(data, token = null){
+
         logging_out.value = true;
-        try {
-            await server.post( `api/register`, data, {headers:{ 'X-OTP-TOKEN' :token }} )
-        } finally {
+
+        try {           
+            await server.post('api/register', data, {headers:{ 'X-OTP-TOKEN' :token }} )
+        } 
+
+        finally {
             logging_out.value = false;
         }
     }

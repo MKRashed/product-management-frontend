@@ -1,5 +1,34 @@
 <script setup>
-import { RouterView } from "vue-router";
+import { loadApp } from '@/lib/server'
+import { useAppStore } from '@/stores/app';
+import { onMounted, ref, watch } from 'vue';
+import { RouterView, useRoute, useRouter } from "vue-router";
+
+const route = useRoute()
+const router = useRouter()
+const loading = ref(true)
+const appStore = useAppStore()
+const { setRouter } = appStore
+
+onMounted(async () => {
+
+  setRouter(router)
+
+  await loadApp()
+
+  loading.value = false
+  
+})
+
+watch( () => route.path,
+  () => {
+    window.scroll({
+      top: 0,
+      behavior: 'smooth'
+    })
+  }
+)
+
 </script>
 
 <template>
