@@ -13,7 +13,7 @@ export const useProductStore = defineStore("productStore", () => {
         loading.value = true;
         try {
             const { data } = await server.get('/api/products');
-            list.value = data;
+            list.value = data.products;
         } catch (err) {
             error.value = err.response?.data || "Failed to fetch products";
         } finally {
@@ -25,7 +25,7 @@ export const useProductStore = defineStore("productStore", () => {
         loading.value = true;
         try {
             const { data } = await server.post('/api/products', productData);
-            list.value.push(data);
+            list.value.push(data.products);
         } catch (err) {
             error.value = err.response?.data || "Failed to add product";
         } finally {
