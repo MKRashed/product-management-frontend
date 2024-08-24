@@ -1,8 +1,8 @@
 <script setup>
-import Item from "@/views/Item.vue"
-import { useProductStore } from '@/stores/product'
-import { onMounted } from "vue"
-import { storeToRefs } from "pinia"
+import { useProductStore } from '@/stores/product';
+import Item from "@/views/ProductItem.vue";
+import { storeToRefs } from "pinia";
+import { onMounted } from "vue";
 
 const productStore = useProductStore()
 
@@ -37,7 +37,7 @@ onMounted(async () => {
                       <div class="p-2 flex items-center justify-center text-sm">Price</div>
                       <div class="p-2 flex items-center justify-center text-sm">Action</div>
                   </div>
-                  <template v-for = "(data, index) in list" :key="data.id">
+                  <template v-for = "data in list" :key="data.id">
                       <Item  :data="data" />
                   </template>
                   </div>

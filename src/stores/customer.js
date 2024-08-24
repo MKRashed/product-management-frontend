@@ -13,7 +13,7 @@ export const useCustomerStore = defineStore("customerStore", () => {
         loading.value = true;
         try {
             const { data } = await server.get('/api/customers');
-            list.value = data;
+            list.value = data.customers;
         } catch (err) {
             error.value = err.response?.data || "Failed to fetch customers";
         } finally {
@@ -36,7 +36,7 @@ export const useCustomerStore = defineStore("customerStore", () => {
     async function editCustomer(customerId) {
         loading.value = true;
         try {
-            const { data } = await server.get(`/api/customers/edit/${customerId}`);
+            const { data } = await server.get(`/api/customers/${customerId}/edit`);
             currentCustomer.value = data;
         } catch (err) {
             error.value = err.response?.data || "Failed to fetch customer details";

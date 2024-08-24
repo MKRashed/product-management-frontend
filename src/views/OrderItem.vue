@@ -15,7 +15,7 @@ const props = defineProps({
         <div class="p-2 flex items-center justify-center">{{ data.price }}</div> 
         <div class="p-2 flex items-center justify-center">
             <RouterLink :to="{ name: 'product-edit', params:{ id:data.id } }" class="group main-button btn-2">
-                <h4 class="text-base font-semibold"> Add Product </h4>
+                <h4 class="text-base font-semibold"> Edit Product </h4>
             </RouterLink>
         </div> 
 

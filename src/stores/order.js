@@ -5,6 +5,11 @@ import { ref } from "vue";
 export const useOrderStore = defineStore("orderStore", () => {
   
     const list = ref([]);
+
+    const customers = ref([]);
+    const products = ref([]);
+    const custom_products = ref([]);
+
     const currentOrder = ref(null);
     const loading = ref(false);
     const error = ref(null);
@@ -13,7 +18,24 @@ export const useOrderStore = defineStore("orderStore", () => {
         loading.value = true;
         try {
             const { data } = await server.get('/api/orders');
-            list.value = data;
+            list.value = data.orders;
+        } catch (err) {
+            error.value = err.response?.data || "Failed to fetch orders";
+        } finally {
+            loading.value = false;
+        }
+    }
+
+    async function createOrders() {
+        loading.value = true;
+        try {
+            const { data } = await server.get('/api/orders/create');
+            customers.value = data.customers;
+            products.value = data.products;
+            custom_products.value = data.products.map(product => ({
+                value: product.id,
+                label: product.name
+              }));
         } catch (err) {
             error.value = err.response?.data || "Failed to fetch orders";
         } finally {
@@ -36,7 +58,7 @@ export const useOrderStore = defineStore("orderStore", () => {
     async function editOrder(orderId) {
         loading.value = true;
         try {
-            const { data } = await server.get(`/api/orders/edit/${orderId}`);
+            const { data } = await server.get(`/api/orders/${orderId}/edit`);
             currentOrder.value = data;
         } catch (err) {
             error.value = err.response?.data || "Failed to fetch order details";
@@ -70,5 +92,9 @@ export const useOrderStore = defineStore("orderStore", () => {
         addOrder,
         editOrder,
         updateOrder,
+        createOrders,
+        customers,
+        products,
+        custom_products
     };
 });

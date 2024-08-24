@@ -3,6 +3,11 @@ import { useProductStore } from '@/stores/product'
 import { reactive, ref } from 'vue'
 import FormErrors from '@/components/FormErrors.vue'
 import AppButton from '@/components/AppButton.vue';
+import { useRoute, useRouter } from 'vue-router';
+
+const route = useRoute();
+
+const router = useRouter();
 const userData = reactive({
   name: '',
   description: '',
@@ -12,7 +17,12 @@ const userData = reactive({
 const productStore = useProductStore()
 
 async function handleFormSubmit() {
-     await productStore.addProduct(userData)
+  try {
+    await productStore.addProduct(userData)
+    return router.push({name: 'products'});
+  } catch (error){
+    console.error(error)
+  }
 }
 
 </script>

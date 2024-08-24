@@ -36,7 +36,7 @@ export const useProductStore = defineStore("productStore", () => {
     async function editProduct(productId) {
         loading.value = true;
         try {
-            const { data } = await server.get(`/api/products/edit/${productId}`);
+            const { data } = await server.get(`/api/products/${productId}/edit`);
             currentProduct.value = data;
         } catch (err) {
             error.value = err.response?.data || "Failed to fetch product details";
