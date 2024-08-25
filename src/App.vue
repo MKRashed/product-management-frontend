@@ -1,5 +1,5 @@
 <script setup>
-import { loadApp } from '@/lib/server'
+import { loadApp } from '@/lib/server';
 import { useAppStore } from '@/stores/app';
 import { onMounted, ref, watch } from 'vue';
 import { RouterView, useRoute, useRouter } from "vue-router";
@@ -33,6 +33,9 @@ watch( () => route.path,
 
 <template>
   <div class="flex min-h-screen flex-col justify-between">
+    <div>
+      <router-link :to="{name:'my-dashboard'}" class="btn-1">Dashboard</router-link>
+    </div>
     <div class="flex-grow">
       <RouterView />
     </div>

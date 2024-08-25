@@ -1,10 +1,8 @@
 <script setup>
 import { useOrderStore } from '@/stores/order';
-import { computed, onMounted, reactive, ref } from 'vue'
-import FormErrors from '@/components/FormErrors.vue'
-import AppButton from '@/components/AppButton.vue';
+import Multiselect from '@vueform/multiselect';
 import { storeToRefs } from 'pinia';
-import Multiselect from '@vueform/multiselect'
+import { computed, onMounted, reactive } from 'vue';
 
 
 const orderStore = useOrderStore()
@@ -12,43 +10,88 @@ const orderStore = useOrderStore()
 const { customers, products, custom_products } = storeToRefs(orderStore)
 
 const userData = reactive({
-    items: [],
     customer_id: '',
     status:0,
     total_amount:'',
-    selectedItem:[
-        {
-            item:'',
-            quantity:'',
-
-        }
-    ],
-    quantity:'',
+    selectedItem:[],
 })
 
-
-const selectedValue = ref(null);
 
 onMounted( async () => {
      await orderStore.createOrders();
 })
 
-const selectedProducts = computed(() => {
-  return products.value.filter(product => userData.items.some(selected => selected === product.id));
+const selectedProduct = (productId) => {
+  
+  return products.value.find(product => product.id === productId);
+  
+};
 
+const updateSubtotal = (selected) => {
+  const product = selectedProduct(selected.item);
+  if (product) {
+    selected.subtotal = selected.quantity * product.price;
+  }
+};
+
+const formatCurrency = (value) => {
+  return new Intl.NumberFormat('en-BD', {
+    style: 'currency',
+    currency: 'BDT',
+  }).format(value);
+};
+
+
+async function handleSelectedProducts(selectedItem) {
+
+    const arrayIndex = selectedItem.length - 1;
+
+    const selectedProductId = parseInt(selectedItem[arrayIndex]);
+
+    const existingProductIndex = userData.selectedItem.findIndex((product) => {
+        return parseInt(product.item) === selectedProductId;
+    });
+    
+
+    if (existingProductIndex !== -1) {
+        userData.selectedItem.splice(existingProductIndex, 1);
+    } else {
+
+        if (selectedItem.length > 0) {
+            userData.selectedItem.push({
+                product_id: selectedProductId,
+                quantity: 1,
+                subtotal:selectedProduct(selectedProductId).price,
+            });
+        }
+    }
+}
+
+// Function to unselect product
+const unselectProduct = (productId) => {
+  userData.selectedItem = userData.selectedItem.filter(
+    selected => selected.product_id !== productId
+  );
+};
+
+
+const totalSubtotal = computed(() => {
+
+  return userData.total_amount = userData.selectedItem.reduce((total, selected) => {
+
+    const subtotal = Number(selected.subtotal) || 0;
+    
+    return total + subtotal;
+
+  }, 0);
 });
 
-async function handleProduct(selectedItem) {
 
-    console.log('selectedItem', selectedItem);
-    
-    
-}
 
 async function handleFormSubmit() {
   try {
-    await useOrderStore.addOrder(userData)
-    // return router.push({name: 'customers'});
+    await orderStore.addOrder(userData)
+    return router.push({name: 'orders'});
   } catch (error){
     console.error(error)
   }
@@ -77,12 +120,9 @@ async function handleFormSubmit() {
                 </select>
             </div>
 
-            {{ selectedProducts }}
-
             <div class="">
                 <p>Orders</p>
                 <Multiselect
-                    v-model="userData.items"
                     :options="custom_products"
                     label="label"
                     track-by="id"
@@ -90,24 +130,27 @@ async function handleFormSubmit() {
                     :close-on-select="false"
                     :searchable="true"
                     :create-option="true"
+                    @change="handleSelectedProducts($event)"
                     />
             </div>
 
             <div>
-                <div v-if="selectedProducts.length">
+                <div v-if="userData.selectedItem.length">
                 <h3>Selected Product Details:</h3>
-                <ul>
-                    <li v-for="product in selectedProducts" :key="product.id">
-                        <p><strong>ID:</strong> {{ product.id }}</p>
-                        <p><strong>Name:</strong> {{ product.name }}</p>
-                        <p><strong>Description:</strong> {{ product.description }}</p>
-                        <p><strong>Price:</strong> {{ product.price }}</p>
+                <ul class="flex flex-wrap gap-4">
+                    <li v-for="selected in userData.selectedItem" :key="selected.product_id.id" class="border p-2 rounded">
+                        <p><strong>ID:</strong> {{ selectedProduct(selected.product_id).id }}</p>
+                        <p><strong>Name:</strong> {{ selectedProduct(selected.product_id).name }}</p>
+                        <p><strong>Price:</strong> {{ formatCurrency(selectedProduct(selected.product_id).price) }}</p>
                         <div>
-                            <input type="text" v-model="userData.quantity">
-                            <button class="btn-1" @change="handleProduct(product)">Add</button>
+                            <input type="number" v-model.number="selected.quantity" min="1" @change="updateSubtotal(selected)">
+                            <p><strong>Subtotal:</strong> {{ formatCurrency(selected.subtotal || selectedProduct(selected.product_id).price) }}</p>
+                            <button type="button" class="btn-2" @click="unselectProduct(selected.product_id)">Remove</button>
                         </div>
                     </li>
                 </ul>
+
+                <h4 class="text-xl font-bold">Total: {{ formatCurrency(totalSubtotal) }}</h4>
                 </div>
             </div>
 

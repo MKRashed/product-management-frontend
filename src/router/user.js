@@ -104,7 +104,7 @@ export default [
                 beforeEnter: [checkAuth],
             },
             {
-                path: 'edit-order',
+                path: ':order_id/edit-order',
                 name: 'edit-order',
                 component: () => import('@/views/OrderEdit.vue'),
                 meta: {

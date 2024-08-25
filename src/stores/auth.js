@@ -11,7 +11,7 @@ export const useAuthStore = defineStore("authStore",() => {
     const logging_in = ref( false );
     const logging_out = ref( false );
     const is_logged_in = ref( false );
-    const user = ref({});
+    const authData = ref({});
 
     function set_auth_token_on_local_storage( token ){
         if( !token ) {
@@ -30,7 +30,7 @@ export const useAuthStore = defineStore("authStore",() => {
     }
 
     function set_user( user ){
-        user.value = user;
+        authData.value = user;
     }
 
     function set_is_logged_in( value ){
@@ -92,6 +92,8 @@ export const useAuthStore = defineStore("authStore",() => {
         }
     }
 
+
+
     return {
         register,
         login,
@@ -101,7 +103,7 @@ export const useAuthStore = defineStore("authStore",() => {
         logout,
         is_logged_in,
         set_auth_token_on_local_storage,
-        user
+        authData
     }
 
 })

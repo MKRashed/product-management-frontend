@@ -49,7 +49,7 @@ onMounted(async () => {
                                     </td>
                                    
                                     <td class="p-2 text-center">
-                                        <RouterLink :to="{ name: 'edit-customer', params:{ customer_id:data.id } }" class="group main-button btn-2">
+                                        <RouterLink :to="{ name: 'edit-order', params:{ order_id:data.id } }" class="group main-button btn-2">
                                             <h4 class="text-base font-semibold"> Edit </h4>
                                         </RouterLink>
                                     </td>
